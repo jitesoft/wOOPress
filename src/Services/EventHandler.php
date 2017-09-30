@@ -14,6 +14,7 @@ use Jitesoft\wOOPress\Contracts\EventListenerInterface;
 class EventHandler implements EventHandlerInterface {
 
     private static $handlerId = 0;
+    private static $listeners = [];
 
     /**
      * Add a listener to a given event.
@@ -36,8 +37,6 @@ class EventHandler implements EventHandlerInterface {
 
 
         return $id;
-
-        // TODO: Implement on() method.
     }
 
     /**
@@ -49,7 +48,10 @@ class EventHandler implements EventHandlerInterface {
      * @return bool Result. If true, removal succeeded, if false, it did not.
      */
     public function off(string $action, int $handle): bool {
-        // TODO: Implement off() method.
+
+
+
+        return true;
     }
 
     /**
@@ -61,6 +63,7 @@ class EventHandler implements EventHandlerInterface {
      * @return bool Result. If true, the invocation succeeded, if false, it did not.
      */
     public function fire(string $action, ...$args): bool {
-        // TODO: Implement fire() method.
+
+
     }
 }

@@ -32,7 +32,7 @@ interface EventHandlerInterface {
      * Remove a listener from a given event.
      *
      * @param string $action Action to remove the listener from.
-     * @param int    $handle Handle for listener to be removed.
+     * @param int    $handle Handle for the listener to be removed.
      *
      * @return bool Result. If true, removal succeeded, if false, it did not.
      */

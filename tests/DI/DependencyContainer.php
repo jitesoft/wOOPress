@@ -22,8 +22,8 @@ class DependencyContainer {
     public static function initialize() {
         self::$instances = [];
         self::$container = [];
-        $dir             = dirname(__FILE__);
-        $bindings        = require_once $dir . "/Bindings.php";
+        $path            = __DIR__ . "/Bindings.php";
+        $bindings        = require $path;
 
         foreach ($bindings as $abstract => $concrete) {
             self::$container[$abstract] = $concrete;

@@ -6,74 +6,48 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 namespace Jitesoft\wOOPress\Services;
 
+use InvalidArgumentException;
 use Jitesoft\wOOPress\Contracts\ActionServiceInterface;
 use Jitesoft\wOOPress\Contracts\EventHandlerInterface;
-use Jitesoft\wOOPress\Contracts\EventListenerInterface;
+use Jitesoft\wOOPress\Contracts\EventListenerInterface as IListener;
 use Jitesoft\wOOPress\EventListener;
 
 /**
- * ActionService wraps the EventHandler to pass events to
- * the underlying WordPress API.
- *
- * It also stores all actions and keeps track of handler id's.
+ * Service so invoke, subscribe and un-subscribe to/from various Actions.
  */
 class ActionService implements ActionServiceInterface {
 
-    /** @var EventListenerInterface[][]|array */
-    private $actions;
+    // Note: This service is more of a wrapper around the EventHandler to keep the WordPress naming standard
+    //       intact. Actions and Filters uses the same event system, but they got different wrappers to make
+    //       the API easier to use for people used to it WP.
 
-    /** @var EventHandlerInterface */
     private $eventHandler;
 
     public function __construct(EventHandlerInterface $eventHandler) {
-        $this->actions      = [];
         $this->eventHandler = $eventHandler;
     }
 
-    /**
-     * Add a listener to a given action.
-     * The listeners invoke method (or in case of a callable, the function itself) will be called when the
-     * event is fired. The passed values will be the name of the action and any arguments passed from the
-     * event itself.
-     *
-     * @param string   $action      Action to listen to.
-     * @param callable $listener    Listener as callable.
-     * @param int      $priority    Priority of the attached listener.
-     * @param int      $maxArgCount Maximum number of arguments the callback will accept.
-     *
-     * @return int Handle for the listener. Can later be used in the `off` method to remove given listener.
-     */
-    public function on(string $action, callable $listener, int $priority = 10, int $maxArgCount = -1): int {
-        $newListener                 = new EventListener($listener);
-        $id                          = $this->eventHandler->on($action, $newListener, $priority, $maxArgCount);
-        $this->actions[$action][$id] = $newListener;
-        return $id;
+    public function on(string $action, $listener, int $priority = 10, int $maxArgCount = -1): int {
+        if (($listener instanceof IListener) === false) {
+            if (is_callable($listener) === false) {
+                throw new InvalidArgumentException(
+                    sprintf(
+                        "The listener passed to the %s was neither a callback nor did it implement the %s.",
+                        'ActionService',
+                        IListener::class
+                    )
+                );
+            }
+            $listener = new EventListener($listener);
+        }
+        return $this->eventHandler->on($action, $listener, $priority, $maxArgCount);
     }
 
-
-
-
-    /**
-     * Remove a listener from a given event.
-     *
-     * @param string                     $action   Action to remove the listener from.
-     * @param EventListenerInterface|int $listener Listener - or handle to listener - to be removed.
-     *
-     * @return bool Result. If true, removal succeeded, if false, it did not.
-     */
     public function off(string $action, int $listener): bool {
-
+        return $this->eventHandler->off($action, $listener);
     }
 
-    /**
-     * Invokes an action of given name.
-     *
-     * @param string $action    Action to invoke.
-     * @param mixed  $args,...  Optional arguments to pass to listener.
-     *
-     * @return bool Result. If true, the invocation succeeded, if false, it did not.
-     */
     public function fire(string $action, ...$args): bool {
-        // TODO: Implement fire() method.
+        return $this->eventHandler->fire($action, ...$args);
     }
 }

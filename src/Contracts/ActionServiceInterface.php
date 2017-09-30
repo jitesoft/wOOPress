@@ -8,14 +8,10 @@ namespace Jitesoft\wOOPress\Contracts;
 
 /**
  * Interface for action services.
- * An action service is intended to wrap the WordPress action calls.
+ * Action services are intended to work with the WordPress Actions.
  */
 interface ActionServiceInterface {
 
-    /**
-     * @param EventHandlerInterface $eventHandler
-     */
-    public function __construct(EventHandlerInterface $eventHandler);
 
     /**
      * Add a listener to a given action.
@@ -23,14 +19,14 @@ interface ActionServiceInterface {
      * event is fired. The passed values will be the name of the action and any arguments passed from the
      * event itself.
      *
-     * @param string   $action      Action to listen to.
-     * @param callable $listener    Listener as callable.
-     * @param int      $priority    Priority of the attached listener.
-     * @param int      $maxArgCount Maximum number of arguments the callback will accept.
+     * @param string                          $action      Action to listen to.
+     * @param callable|EventListenerInterface $listener    Listener as callable.
+     * @param int                             $priority    Priority of the attached listener.
+     * @param int                             $maxArgCount Maximum number of arguments the callback will accept.
      *
      * @return int Handle for the listener. Can later be used in the `off` method to remove given listener.
      */
-    public function on(string $action, callable $listener, int $priority = 10, int $maxArgCount = -1) : int;
+    public function on(string $action, $listener, int $priority = 10, int $maxArgCount = -1) : int;
 
     /**
      * Remove a listener from a given action.
@@ -45,8 +41,8 @@ interface ActionServiceInterface {
     /**
      * Invokes an action of given name.
      *
-     * @param string $action    Action to invoke.
-     * @param mixed  $args,...  Optional arguments to pass to listener.
+     * @param string $action   Action to invoke.
+     * @param mixed  $args,... Optional arguments to pass to listener.
      *
      * @return bool Result. If true, the invocation succeeded, if false, it did not.
      */
