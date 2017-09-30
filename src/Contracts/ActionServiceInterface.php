@@ -6,12 +6,13 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 namespace Jitesoft\wOOPress\Contracts;
 
+use InvalidArgumentException;
+
 /**
  * Interface for action services.
  * Action services are intended to work with the WordPress Actions.
  */
 interface ActionServiceInterface {
-
 
     /**
      * Add a listener to a given action.
@@ -25,6 +26,8 @@ interface ActionServiceInterface {
      * @param int                             $maxArgCount Maximum number of arguments the callback will accept.
      *
      * @return int Handle for the listener. Can later be used in the `off` method to remove given listener.
+     *
+     * @throws InvalidArgumentException
      */
     public function on(string $action, $listener, int $priority = 10, int $maxArgCount = -1) : int;
 
@@ -34,7 +37,7 @@ interface ActionServiceInterface {
      * @param string $action Action to remove the listener from.
      * @param int    $handle Handle of the listener to be removed.
      *
-     * @return bool Result. If true, removal succeeded, if false, it did not.
+     * @return bool Result.
      */
     public function off(string $action, int $handle) : bool;
 
@@ -44,7 +47,7 @@ interface ActionServiceInterface {
      * @param string $action   Action to invoke.
      * @param mixed  $args,... Optional arguments to pass to listener.
      *
-     * @return bool Result. If true, the invocation succeeded, if false, it did not.
+     * @return bool Result.
      */
     public function fire(string $action, ...$args) : bool;
 }
