@@ -15,39 +15,39 @@ use InvalidArgumentException;
 interface ActionServiceInterface {
 
     /**
-     * Add a listener to a given action.
-     * The listeners invoke method (or in case of a callable, the function itself) will be called when the
+     * Add an action to a given action.
+     * The actions invoke method (or in case of a callable, the function itself) will be called when the
      * event is fired. The passed values will be the name of the action and any arguments passed from the
      * event itself.
      *
-     * @param string                          $action      Action to listen to.
-     * @param callable|EventListenerInterface $listener    Listener as callable.
-     * @param int                             $priority    Priority of the attached listener.
-     * @param int                             $maxArgCount Maximum number of arguments the callback will accept.
+     * @param string                   $tag         Name of the tag to listen to.
+     * @param callable|ActionInterface $action      Action as callable or ActionInterface.
+     * @param int                      $priority    Priority of the attached action.
+     * @param int                      $maxArgCount Maximum number of arguments the callback will accept.
      *
-     * @return int Handle for the listener. Can later be used in the `off` method to remove given listener.
+     * @return int Handle for the action. Can later be used in the `off` method to remove given action.
      *
      * @throws InvalidArgumentException
      */
-    public function on(string $action, $listener, int $priority = 10, int $maxArgCount = -1) : int;
+    public function on(string $tag, $action, int $priority = 10, int $maxArgCount = -1) : int;
 
     /**
-     * Remove a listener from a given action.
+     * Remove a action from a given tag.
      *
-     * @param string $action Action to remove the listener from.
-     * @param int    $handle Handle of the listener to be removed.
+     * @param string $tag    Tag to remove the action from.
+     * @param int    $handle Handle of the action to be removed.
      *
      * @return bool Result.
      */
-    public function off(string $action, int $handle) : bool;
+    public function off(string $tag, int $handle) : bool;
 
     /**
-     * Invokes an action of given name.
+     * Invokes all actions of given a given tag.
      *
-     * @param string $action   Action to invoke.
-     * @param mixed  $args,... Optional arguments to pass to listener.
+     * @param string $tag      Tag to invoke.
+     * @param mixed  $args,... Optional arguments to pass to action.
      *
      * @return bool Result.
      */
-    public function fire(string $action, ...$args) : bool;
+    public function fire(string $tag, ...$args) : bool;
 }

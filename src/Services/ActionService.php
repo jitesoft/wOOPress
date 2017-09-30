@@ -9,11 +9,11 @@ namespace Jitesoft\wOOPress\Services;
 use InvalidArgumentException;
 use Jitesoft\wOOPress\Contracts\ActionServiceInterface;
 use Jitesoft\wOOPress\Contracts\EventHandlerInterface;
-use Jitesoft\wOOPress\Contracts\EventListenerInterface as IListener;
+use Jitesoft\wOOPress\Contracts\EventListenerInterface;
 use Jitesoft\wOOPress\EventListener;
 
 /**
- * Service so invoke, subscribe and un-subscribe to/from various Actions.
+ * Service to invoke, subscribe and un-subscribe actions to various tags.
  */
 class ActionService implements ActionServiceInterface {
 
@@ -27,27 +27,27 @@ class ActionService implements ActionServiceInterface {
         $this->eventHandler = $eventHandler;
     }
 
-    public function on(string $action, $listener, int $priority = 10, int $maxArgCount = -1): int {
-        if (($listener instanceof IListener) === false) {
-            if (is_callable($listener) === false) {
+    public function on(string $tag, $action, int $priority = 10, int $maxArgCount = -1): int {
+        if (($action instanceof EventListenerInterface) === false) {
+            if (is_callable($action) === false) {
                 throw new InvalidArgumentException(
                     sprintf(
                         "The listener passed to the %s was neither a callback nor did it implement the %s.",
                         'ActionService',
-                        IListener::class
+                        EventListenerInterface::class
                     )
                 );
             }
-            $listener = new EventListener($listener);
+            $action = new EventListener($action);
         }
-        return $this->eventHandler->on($action, $listener, $priority, $maxArgCount);
+        return $this->eventHandler->on($tag, $action, $priority, $maxArgCount);
     }
 
-    public function off(string $action, int $listener): bool {
-        return $this->eventHandler->off($action, $listener);
+    public function off(string $tag, int $listener): bool {
+        return $this->eventHandler->off($tag, $listener);
     }
 
-    public function fire(string $action, ...$args): bool {
-        return $this->eventHandler->fire($action, ...$args);
+    public function fire(string $tag, ...$args): bool {
+        return $this->eventHandler->fire($tag, ...$args);
     }
 }
