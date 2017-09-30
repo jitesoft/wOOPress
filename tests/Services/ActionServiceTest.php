@@ -7,6 +7,7 @@
 namespace Jitesoft\wOOPress\Tests\Services;
 
 use InvalidArgumentException;
+use Jitesoft\wOOPress\Contracts\ActionInterface;
 use Jitesoft\wOOPress\Contracts\ActionServiceInterface;
 use Jitesoft\wOOPress\Contracts\EventHandlerInterface;
 use Jitesoft\wOOPress\Contracts\EventListenerInterface;
