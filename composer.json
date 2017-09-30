@@ -1,0 +1,32 @@
+{
+    "name": "jitesoft/woopress",
+    "description": "An abstraction of the WordPress API allowing for a more OOP type of coding.",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Johannes Tegnér",
+            "email": "johannes@jitesoft.com"
+        }
+    ],
+    "require": {
+        "php": ">7.1",
+        "jitesoft/exceptions": "^1.1",
+        "jitesoft/datastructures": "^2.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^6.3",
+        "squizlabs/php_codesniffer": "3.0.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Jitesoft\\wOOPress\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Jitesoft\\wOOPress\\Tests\\": "tests/"
+        }
+
+    }
+}
