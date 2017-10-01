@@ -19,9 +19,10 @@ class FilterServiceTest extends AbstractTestCase {
 
     public function testAddWithCallback() {
         $mock = Mockery::mock(EventHandlerInterface::class)
-        ->shouldReceive('on')
+        ->shouldReceive('listen')
         ->with(
             'test_filter',
+            EventHandlerInterface::EVENT_TYPE_FILTER,
             anInstanceOf(EventListenerInterface::class),
             5,
             11
@@ -39,9 +40,10 @@ class FilterServiceTest extends AbstractTestCase {
         $listener = new EventListener(function() {});
 
         $mock = Mockery::mock(EventHandlerInterface::class)
-            ->shouldReceive('on')
+            ->shouldReceive('listen')
             ->with(
                 'test_filter',
+                EventHandlerInterface::EVENT_TYPE_FILTER,
                 identicalTo($listener),
                 5,
                 11
@@ -65,18 +67,20 @@ class FilterServiceTest extends AbstractTestCase {
 
     public function testRemove() {
         $mock = Mockery::mock(EventHandlerInterface::class)
-            ->shouldReceive('on')
+            ->shouldReceive('listen')
             ->with(
                 'test_filter',
+                EventHandlerInterface::EVENT_TYPE_FILTER,
                 anInstanceOf(EventListenerInterface::class),
                 5,
                 11
             )
             ->andReturn(5)
-            ->shouldReceive('off')
+            ->shouldReceive('removeListener')
             ->with(
+                5,
                 'test_filter',
-                5
+                EventHandlerInterface::EVENT_TYPE_FILTER
             )
             ->andReturn(true)
             ->getMock();
@@ -86,15 +90,15 @@ class FilterServiceTest extends AbstractTestCase {
         /** @var $filterService FilterServiceInterface */
         $filterService = DependencyContainer::get(FilterServiceInterface::class);
         $filterService->add('test_filter', function() {}, 5, 11);
-        $this->assertTrue($filterService->remove("test_filter", 5));
+        $this->assertTrue($filterService->remove(5,"test_filter"));
     }
 
     public function testApply() {
         $mock = Mockery::mock(EventHandlerInterface::class)
-            ->shouldReceive('on')
+            ->shouldReceive('listen')
             ->andReturn(1)
             ->shouldReceive('fire')
-            ->with('test_filter', 'a', 'b', 'c')
+            ->with('test_filter', EventHandlerInterface::EVENT_TYPE_FILTER,'a', 'b', 'c')
             ->andReturn(true)
             ->getMock();
 

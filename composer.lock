@@ -4,57 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "ef1a36d9e342a331cdf97c952ada439c",
+    "content-hash": "9f11545ea0d0b2d080875e3b7d5cc58f",
     "packages": [
-        {
-            "name": "jitesoft/datastructures",
-            "version": "2.0.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/jitesoft/php-datastructures.git",
-                "reference": "a1e67e46c1a888eaa4ac9b7c3779ee134f25f957"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/jitesoft/php-datastructures/zipball/a1e67e46c1a888eaa4ac9b7c3779ee134f25f957",
-                "reference": "a1e67e46c1a888eaa4ac9b7c3779ee134f25f957",
-                "shasum": ""
-            },
-            "require": {
-                "jitesoft/exceptions": "^1.0",
-                "jitesoft/math": "^1.0",
-                "php": ">7.1"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "^6.0",
-                "squizlabs/php_codesniffer": "3.0.*"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Jitesoft\\Utilities\\DataStructures\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Johannes Tegnér",
-                    "email": "johannes@jitesoft.com"
-                }
-            ],
-            "description": "Misc data structures for php.",
-            "keywords": [
-                "array",
-                "data structure",
-                "list",
-                "queue",
-                "stack"
-            ],
-            "time": "2017-09-22T16:41:42+00:00"
-        },
         {
             "name": "jitesoft/exceptions",
             "version": "1.1.0",
@@ -97,51 +48,6 @@
                 "exceptions"
             ],
             "time": "2017-09-23T09:12:27+00:00"
-        },
-        {
-            "name": "jitesoft/math",
-            "version": "1.0.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/jitesoft/php-math.git",
-                "reference": "af09b6a11aba460be76072844bca1cf31078ebd4"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/jitesoft/php-math/zipball/af09b6a11aba460be76072844bca1cf31078ebd4",
-                "reference": "af09b6a11aba460be76072844bca1cf31078ebd4",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">7.1"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "^6.0",
-                "squizlabs/php_codesniffer": "3.0.*"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Jitesoft\\Utilities\\Math\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Johannes Tegnér",
-                    "email": "johannes@jitesoft.com"
-                }
-            ],
-            "description": "Misc data structures for php.",
-            "keywords": [
-                "math",
-                "matrix",
-                "vector"
-            ],
-            "time": "2017-08-27T13:42:41+00:00"
         }
     ],
     "packages-dev": [

@@ -14,8 +14,10 @@ interface EventListenerInterface {
     /**
      * Callback function which will be called when the event that the listener subscribes to is fired.
      *
-     * @param string $event   Name of the event which invoked the listener.
-     * @param mixed  $args,.. Argument list.
+     * @param string $event    Name of the event which invoked the listener.
+     * @param string $type     Type of event fired.
+     * @param mixed  $args ,.. Argument list.
+     * @return
      */
-    public function invoke(string $event, ...$args);
+    public function invoke(string $event, string $type, ...$args);
 }

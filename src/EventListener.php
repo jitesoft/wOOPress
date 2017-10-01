@@ -18,14 +18,17 @@ class EventListener implements EventListenerInterface {
         $this->callback = $callback;
     }
 
+
     /**
      * Callback function which will be called when the event that the listener subscribes to is fired.
      *
-     * @param string $event Name of the event which invoked the listener.
+     * @param string $event   Name of the event which invoked the listener.
+     * @param string $type    Type of event.
      * @param mixed $args ,.. Argument list.
+     * @return
      */
-    public function invoke(string $event, ...$args) {
+    public function invoke(string $event, string $type, ...$args) {
         $cb = $this->callback;
-        return $cb($event, $args);
+        return $cb($event, $type, ...$args);
     }
 }

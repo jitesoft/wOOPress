@@ -7,7 +7,6 @@
 namespace Jitesoft\wOOPress\Tests\Services;
 
 use InvalidArgumentException;
-use Jitesoft\wOOPress\Contracts\ActionInterface;
 use Jitesoft\wOOPress\Contracts\ActionServiceInterface;
 use Jitesoft\wOOPress\Contracts\EventHandlerInterface;
 use Jitesoft\wOOPress\Contracts\EventListenerInterface;
@@ -20,9 +19,10 @@ class ActionServiceTest extends AbstractTestCase {
 
     public function testOnWithCallback() {
         $mock = Mockery::mock(EventHandlerInterface::class)
-            ->shouldReceive('on')
+            ->shouldReceive('listen')
             ->with(
                 'test_event',
+                EventHandlerInterface::EVENT_TYPE_ACTION,
                 anInstanceOf(EventListenerInterface::class),
                 5,
                 11
@@ -41,9 +41,10 @@ class ActionServiceTest extends AbstractTestCase {
         $listener = new EventListener(function() {});
 
         $mock = Mockery::mock(EventHandlerInterface::class)
-            ->shouldReceive('on')
+            ->shouldReceive('listen')
             ->with(
                 'test_event',
+                EventHandlerInterface::EVENT_TYPE_ACTION,
                 identicalTo($listener),
                 3,
                 73
@@ -69,18 +70,20 @@ class ActionServiceTest extends AbstractTestCase {
     public function testOff() {
 
         $mock = Mockery::mock(EventHandlerInterface::class)
-            ->shouldReceive('on')
+            ->shouldReceive('listen')
             ->with(
                 'test_event',
+                EventHandlerInterface::EVENT_TYPE_ACTION,
                 anInstanceOf(EventListenerInterface::class),
                 5,
                 11
             )
             ->andReturn(5)
-            ->shouldReceive('off')
+            ->shouldReceive('removeListener')
             ->with(
+                5,
                 'test_event',
-                5
+                EventHandlerInterface::EVENT_TYPE_ACTION
             )
             ->andReturn(true)
             ->getMock();
@@ -89,15 +92,15 @@ class ActionServiceTest extends AbstractTestCase {
         /** @var $actionService ActionServiceInterface */
         $actionService = DependencyContainer::get(ActionServiceInterface::class);
         $actionService->on("test_event", function(){}, 5, 11);
-        $this->assertTrue($actionService->off('test_event', 5));
+        $this->assertTrue($actionService->off(5,'test_event'));
     }
 
     public function testFire() {
         $mock = Mockery::mock(EventHandlerInterface::class)
-            ->shouldReceive('on')
+            ->shouldReceive('listen')
             ->andReturn(1)
             ->shouldReceive('fire')
-            ->with('test_event', 'a', 'b', 'c')
+            ->with('test_event', EventHandlerInterface::EVENT_TYPE_ACTION, 'a', 'b', 'c')
             ->andReturn(true)
             ->getMock();
 

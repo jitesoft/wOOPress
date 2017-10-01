@@ -34,12 +34,12 @@ interface ActionServiceInterface {
     /**
      * Remove a action from a given tag.
      *
-     * @param string $tag    Tag to remove the action from.
      * @param int    $handle Handle of the action to be removed.
+     * @param string $tag    Tag to remove the action from.
      *
      * @return bool Result.
      */
-    public function off(string $tag, int $handle) : bool;
+    public function off(int $handle, string $tag) : bool;
 
     /**
      * Invokes all actions of given a given tag.
