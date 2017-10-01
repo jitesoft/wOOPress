@@ -1,6 +1,9 @@
 # wOOPress
 
 An abstraction layer for the WordPress API to ease the development of WordPress themes and plugins in a more OOP style.  
+  
+This lib is currently under development, nothing is currently marked as stable, no deprecation tags will be added before v 1.0.0.  
+A lot of changes might happen to the API that breaks any projects using the API.  
 
 ## Installation
 
@@ -12,9 +15,9 @@ Currently only way to install the lib is through cloning the repository, this du
 
 ## Recommendations
 
-The wOOPress library is recommended to use with some type of dependency injection.  
-All services are built against interfaces, interfaces bound to the classes should be used in the Dependency Injector.
-
+The wOOPress library is recommended to be used with some type of dependency injection.  
+All services are built against interfaces, interfaces bound to the classes should be used in the Dependency Injector.  
+This is not forced though. Using the API as normal objects is possible too.
 
 ## Versions
 
