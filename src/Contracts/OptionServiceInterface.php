@@ -6,6 +6,10 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 namespace Jitesoft\wOOPress\Contracts;
 
+use Exception;
+use InvalidArgumentException;
+use OutOfBoundsException;
+
 /**
  * Contract for Option services.
  * Option services are made to handle creation, updating, removal and fetching of options.
@@ -21,6 +25,10 @@ interface OptionServiceInterface {
      *                                         an OptionInterface object, this can be left null and will be ignored.
      * @param bool                   $autoload If option should be auto-loaded or not.
      * @return OptionInterface|null The created and saved option or null on failure.
+     *
+     * @throws InvalidArgumentException on invalid option argument.
+     * @throws Exception when option with given name already exists.
+     * @throws OutOfBoundsException if value is to great.
      */
     public function add($option, $value = null, bool $autoload = true) : ?OptionInterface;
 
@@ -30,6 +38,8 @@ interface OptionServiceInterface {
      * @param string|OptionInterface $option Option as object or the name of the option.
      *
      * @return bool Result.
+     *
+     * @throws InvalidArgumentException on invalid option argument.
      */
     public function remove($option) : bool;
 
@@ -37,9 +47,10 @@ interface OptionServiceInterface {
      * Get a option from the database.
      *
      * @param string $option   Name of the option to fetch.
+     *
      * @return OptionInterface|null The fetched option or null if none found.
      */
-    public function get($option) : ?OptionInterface;
+    public function get(string $option) : ?OptionInterface;
 
     /**
      * Update a given option in the database.
@@ -48,6 +59,10 @@ interface OptionServiceInterface {
      * @param mixed                  $value  New option value (max 2^32 bytes). If the passed option is an
      *                                       OptionInterface object, this can be left null and will be ignored.
      * @return bool Result.
+     *
+     * @throws InvalidArgumentException on invalid option argument.
+     * @throws OutOfBoundsException if value is to great.
+     * @throws Exception when option with given name does not exist.
      */
     public function update($option, $value = null) : bool;
 }
