@@ -13,7 +13,7 @@ build:
     expire_in: 10 min
 
 test:
-  image: jitesoft/php-fpm:latest
+  image: jitesoft/composer:latest
   dependencies:
     - build
   script:
