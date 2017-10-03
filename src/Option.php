@@ -10,6 +10,11 @@ use Jitesoft\wOOPress\Contracts\OptionInterface;
 
 class Option implements OptionInterface {
 
+    public function __construct(string $name, $value = null) {
+
+
+    }
+
     /**
      * Get the name of the option.
      *
