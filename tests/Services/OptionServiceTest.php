@@ -6,11 +6,13 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 namespace Jitesoft\wOOPress\Tests\Services;
 
+use InvalidArgumentException;
 use Jitesoft\wOOPress\Contracts\OptionInterface;
 use Jitesoft\wOOPress\Contracts\OptionServiceInterface;
 use Jitesoft\wOOPress\Option;
 use Jitesoft\wOOPress\Tests\AbstractTestCase;
 use Jitesoft\wOOPress\Tests\DI\DependencyContainer;
+use OutOfBoundsException;
 use phpmock\MockBuilder;
 
 class OptionServiceTest extends AbstractTestCase {
@@ -77,19 +79,206 @@ class OptionServiceTest extends AbstractTestCase {
         $this->assertFalse($out->isDirty());
     }
 
-    public function testAddFailInvalidOptionType() {}
-    public function testAddFailOutOfBounds() {}
-    public function testAddFailOptionExists() {}
+    public function testAddFailInvalidOptionType() {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('The argument $option has to be either a string or derive from OptionInterface.');
+        $this->service->add(false);
+    }
 
-    public function testRemoveSuccess() {}
-    public function testRemoveFailNoOption() {}
-    public function testRemoveInvalidOptionType() {}
+    public function testAddFailOutOfBounds() {
+        $mock = (new MockBuilder())
+            ->setNamespace($this->namespace)
+            ->setName("strlen")
+            ->setFunction(function() {
+                return ((2^32) + 5);
+            })
+            ->build();
+        $mock->enable();
 
-    public function testGetSuccess() {}
-    public function testGetFailNoOption() {}
+        $this->expectException(OutOfBoundsException::class);
+        $this->expectExceptionMessage("Invalid value size, maximum size is 2^32 bytes.");
 
-    public function testUpdateSuccess() {}
-    public function testUpdateFailInvalidOptionType() {}
-    public function testUpdateFailOutOfBounds() {}
-    public function testUpdateFailNoOption() {}
+        $this->service->add("test", "whatever");
+        $mock->disable();
+    }
+
+    public function testAddFailOptionExists() {
+        $mock = (new MockBuilder())
+            ->setNamespace($this->namespace)
+            ->setName("add_option")
+            ->setFunction(function() {
+                return false;
+            })
+            ->build();
+        $mock->enable();
+
+        $this->assertNull($this->service->add("option", "abc"));
+        $mock->disable();
+    }
+
+    public function testRemoveSuccessWithString() {
+        $mock = (new MockBuilder())
+            ->setNamespace($this->namespace)
+            ->setName("delete_option")
+            ->setFunction(function($optionName) {
+                $this->assertEquals("option", $optionName);
+                return true;
+            })
+            ->build();
+        $mock->enable();
+        $this->assertTrue($this->service->remove("option"));
+        $mock->disable();
+    }
+
+    public function testRemoveSuccessWithOption() {
+        $mock = (new MockBuilder())
+            ->setNamespace($this->namespace)
+            ->setName("delete_option")
+            ->setFunction(function($optionName) {
+                $this->assertEquals("option", $optionName);
+                return true;
+            })
+            ->build();
+        $mock->enable();
+        $this->assertTrue($this->service->remove(new Option("option", "abc")));
+        $mock->disable();
+    }
+
+    public function testRemoveFailNoOption() {
+        $mock = (new MockBuilder())
+            ->setNamespace($this->namespace)
+            ->setName("delete_option")
+            ->setFunction(function($optionName) {
+                $this->assertEquals("option", $optionName);
+                return false; // Pretend option exists and delete_option returns false!
+            })
+            ->build();
+        $mock->enable();
+        $this->assertFalse($this->service->remove("option"));
+        $mock->disable();
+
+    }
+
+    public function testRemoveInvalidOptionType() {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('The argument $option has to be either a string or derive from OptionInterface.');
+        $this->service->remove(true);
+    }
+
+    public function testGetSuccess() {
+        $mock = (new MockBuilder())
+            ->setNamespace($this->namespace)
+            ->setName("get_option")
+            ->setFunction(function($optionName) {
+                $this->assertEquals("option", $optionName);
+                // Pretend it exists and the value of the option is "success"
+                return "success";
+            })
+            ->build();
+        $mock->enable();
+        $out = $this->service->get("option");
+        $mock->disable();
+
+        $this->assertInstanceOf(OptionInterface::class, $out);
+
+        $this->assertFalse($out->isDirty());
+        $this->assertEquals("option", $out->getName());
+        $this->assertEquals("success", $out->getValue());
+    }
+
+    public function testGetFailNoOption() {
+        $mock = (new MockBuilder())
+            ->setNamespace($this->namespace)
+            ->setName("get_option")
+            ->setFunction(function($optionName) {
+                $this->assertEquals("option", $optionName);
+                return false;
+            })
+            ->build();
+        $mock->enable();
+        $this->assertNull($this->service->get("option"));
+        $mock->disable();
+    }
+
+    public function testUpdateSuccessWithString() {
+        $mock = (new MockBuilder())
+            ->setNamespace($this->namespace)
+            ->setName("update_option")
+            ->setFunction(function($optionName, $value) {
+                $this->assertEquals("option", $optionName);
+                $this->assertEquals("value!", $value);
+                return true;
+            })
+            ->build();
+        $mock->enable();
+        $out = $this->service->update("option", "value!");
+        $this->assertFalse($out->isDirty());
+        $this->assertEquals("option", $out->getName());
+        $this->assertEquals("value!", $out->getValue());
+        $mock->disable();
+    }
+
+    public function testUpdateSuccessWithOption() {
+        $mock = (new MockBuilder())
+            ->setNamespace($this->namespace)
+            ->setName("update_option")
+            ->setFunction(function($optionName, $value) {
+                $this->assertEquals("option", $optionName);
+                $this->assertEquals("value!", $value);
+                return true;
+            })
+            ->build();
+        $mock->enable();
+        $out = $this->service->update(new Option("option", "value!"));
+        $this->assertFalse($out->isDirty());
+        $this->assertEquals("option", $out->getName());
+        $this->assertEquals("value!", $out->getValue());
+        $mock->disable();
+    }
+
+
+    public function testUpdateFailInvalidOptionType() {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('The argument $option has to be either a string or derive from OptionInterface.');
+        $this->service->update(true);
+    }
+
+    public function testUpdateFailOutOfBounds() {
+        $mock = (new MockBuilder())
+            ->setNamespace($this->namespace)
+            ->setName("strlen")
+            ->setFunction(function() {
+                return ((2^32) + 5);
+            })
+            ->build();
+        $mock->enable();
+
+        $this->expectException(OutOfBoundsException::class);
+        $this->expectExceptionMessage("Invalid value size, maximum size is 2^32 bytes.");
+
+        $this->service->update("test", "whatever");
+        $mock->disable();
+    }
+
+    public function testUpdateFailNoOption() {
+        $mock = (new MockBuilder())
+            ->setNamespace($this->namespace)
+            ->setName("update_option")
+            ->setFunction(function($optionName, $optionValue) {
+                $this->assertEquals("tes", $optionName);
+                $this->assertEquals("whatever", $optionValue);
+            })
+            ->build();
+        $mock->enable();
+
+        $out = $this->service->update("test", "whatever");
+        $mock->disable();
+
+        $this->assertNotNull($out);
+        $this->assertInstanceOf(OptionInterface::class, $out);
+        $this->assertFalse($out->isDirty());
+        $this->assertEquals("test", $out->getName());
+        $this->assertEquals("whatever", $out->getValue());
+    }
+
 }
