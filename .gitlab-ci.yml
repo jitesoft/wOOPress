@@ -7,6 +7,10 @@ build:
   stage: build
   script:
     - composer install --prefer-source --no-interaction
+  artifacts:
+    paths:
+      - vendor/
+    expire_in: 10 min
 
 test:
   image: jitesoft/php-fpm:latest
