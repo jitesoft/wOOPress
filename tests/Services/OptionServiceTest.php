@@ -6,6 +6,7 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 namespace Jitesoft\wOOPress\Tests\Services;
 
+use Exception;
 use InvalidArgumentException;
 use Jitesoft\wOOPress\Contracts\OptionInterface;
 use Jitesoft\wOOPress\Contracts\OptionServiceInterface;
@@ -36,10 +37,11 @@ class OptionServiceTest extends AbstractTestCase {
             ->setName("add_option")
             ->setFunction(function($option, $value, $deprecated, $autoload) {
                 $this->assertInternalType('string', $option);
-                $this->assertEquals("optionname", $value);
+                $this->assertEquals("optionname", $option);
                 $this->assertEquals("abc", $value);
-                $this->assertFalse($deprecated);
-                $this->assertTrue($autoload);
+                $this->assertEquals("", $deprecated);
+                $this->assertEquals("yes", $autoload);
+                return true;
             })
             ->build();
         $mock->enable();
@@ -58,11 +60,12 @@ class OptionServiceTest extends AbstractTestCase {
             ->setNamespace($this->namespace)
             ->setName("add_option")
             ->setFunction(function($option, $value, $deprecated, $autoload) {
-                $this->assertInstanceOf(OptionInterface::class, $option);
-                $this->assertEquals("optionname", $value);
+                $this->assertInternalType('string', $option);
+                $this->assertEquals("optionname", $option);
                 $this->assertEquals("abc", $value);
-                $this->assertFalse($deprecated);
-                $this->assertTrue($autoload);
+                $this->assertEquals("", $deprecated);
+                $this->assertEquals("yes", $autoload);
+                return true;
             })
             ->build();
         $mock->enable();
@@ -89,16 +92,19 @@ class OptionServiceTest extends AbstractTestCase {
         $mock = (new MockBuilder())
             ->setNamespace($this->namespace)
             ->setName("strlen")
-            ->setFunction(function() {
-                return ((2^32) + 5);
+            ->setFunction(function($val) {
+                $this->assertEquals("whatever", $val);
+                return 2**32 + 1;
             })
             ->build();
         $mock->enable();
 
-        $this->expectException(OutOfBoundsException::class);
-        $this->expectExceptionMessage("Invalid value size, maximum size is 2^32 bytes.");
-
-        $this->service->add("test", "whatever");
+        try {
+            $this->service->add("test", "whatever");
+        } catch (Exception $e) {
+            $this->assertInstanceOf(OutOfBoundsException::class, $e);
+            $this->assertEquals("Invalid value size, maximum size is 2^32 bytes.", $e->getMessage());
+        }
         $mock->disable();
     }
 
@@ -190,9 +196,9 @@ class OptionServiceTest extends AbstractTestCase {
         $mock = (new MockBuilder())
             ->setNamespace($this->namespace)
             ->setName("get_option")
-            ->setFunction(function($optionName) {
+            ->setFunction(function($optionName, $default) {
                 $this->assertEquals("option", $optionName);
-                return false;
+                return $default;
             })
             ->build();
         $mock->enable();
@@ -247,16 +253,19 @@ class OptionServiceTest extends AbstractTestCase {
         $mock = (new MockBuilder())
             ->setNamespace($this->namespace)
             ->setName("strlen")
-            ->setFunction(function() {
-                return ((2^32) + 5);
+            ->setFunction(function($value) {
+                $this->assertEquals("whatever", $value);
+                return ((2**32) + 5);
             })
             ->build();
         $mock->enable();
 
-        $this->expectException(OutOfBoundsException::class);
-        $this->expectExceptionMessage("Invalid value size, maximum size is 2^32 bytes.");
-
-        $this->service->update("test", "whatever");
+        try {
+            $this->service->update("test", "whatever");
+        } catch (Exception $e) {
+            $this->assertInstanceOf(OutOfBoundsException::class, $e);
+            $this->assertEquals("Invalid value size, maximum size is 2^32 bytes.", $e->getMessage());
+        }
         $mock->disable();
     }
 
@@ -265,20 +274,16 @@ class OptionServiceTest extends AbstractTestCase {
             ->setNamespace($this->namespace)
             ->setName("update_option")
             ->setFunction(function($optionName, $optionValue) {
-                $this->assertEquals("tes", $optionName);
+                $this->assertEquals("test", $optionName);
                 $this->assertEquals("whatever", $optionValue);
+                return false;
             })
             ->build();
         $mock->enable();
-
         $out = $this->service->update("test", "whatever");
         $mock->disable();
 
-        $this->assertNotNull($out);
-        $this->assertInstanceOf(OptionInterface::class, $out);
-        $this->assertFalse($out->isDirty());
-        $this->assertEquals("test", $out->getName());
-        $this->assertEquals("whatever", $out->getValue());
+        $this->assertNull($out);
     }
 
 }
