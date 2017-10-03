@@ -13,12 +13,10 @@ use Jitesoft\wOOPress\Option;
 use OutOfBoundsException;
 
 class OptionService implements OptionServiceInterface {
-    private const INVALID_OPTION_MESSAGE     = 'The argument $option has to be either a string' .
-                                               ' or derive from OptionInterface.';
+    private const INVALID_OPTION_MESSAGE     =
+        'The argument $option has to be either a string or derive from OptionInterface.';
     private const INVALID_VALUE_SIZE_MESSAGE = 'Invalid value size, maximum size is 2^32 bytes.';
     private const MAX_VALUE_SIZE             = 2**32;
-
-
 
     /**
      * Create a new option.
