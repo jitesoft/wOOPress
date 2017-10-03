@@ -1,0 +1,21 @@
+build:
+  cache:
+    key: cache:vendor
+    paths:
+      - vendor/
+  image: jitesoft/composer:latest
+  stage: build
+  script:
+    - composer install --prefer-source --no-interaction
+  artifacts:
+    paths:
+      - vendor/
+    expire_in: 10 min
+
+test:
+  image: jitesoft/composer:latest
+  dependencies:
+    - build
+  script:
+    - vendor/bin/phpunit --configuration phpunit.xml --colors=never
+    - vendor/bin/phpcs -p --report=summary --standard=style.xml src

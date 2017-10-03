@@ -10,13 +10,23 @@ use Jitesoft\wOOPress\Contracts\OptionInterface;
 
 class Option implements OptionInterface {
 
+    protected $name;
+    protected $value;
+    protected $dirty;
+
+    public function __construct(string $name, $value = null) {
+        $this->dirty = true;
+        $this->name  = $name;
+        $this->value = $value;
+    }
+
     /**
      * Get the name of the option.
      *
      * @return string Option name.
      */
     public function getName(): string {
-        // TODO: Implement getName() method.
+        return $this->name;
     }
 
     /**
@@ -25,7 +35,7 @@ class Option implements OptionInterface {
      * @return mixed Option value.
      */
     public function getValue() {
-        // TODO: Implement getValue() method.
+        return $this->value;
     }
 
     /**
@@ -34,7 +44,7 @@ class Option implements OptionInterface {
      * @param mixed $value New value (max 2^32 bytes).
      */
     public function setValue($value) {
-        // TODO: Implement setValue() method.
+        $this->value = $value;
     }
 
     /**
@@ -44,6 +54,16 @@ class Option implements OptionInterface {
      * @return bool True if dirty, false if clean.
      */
     public function isDirty(): bool {
-        // TODO: Implement isDirty() method.
+        return $this->dirty;
+    }
+
+    /**
+     * Set dirty state.
+     *
+     * @param bool $state
+     * @internal Should not be changed outside of a OptionServiceInterface implementer.
+     */
+    public function setDirty(bool $state) {
+        $this->dirty = $state;
     }
 }

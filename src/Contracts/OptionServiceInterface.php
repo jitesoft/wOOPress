@@ -6,7 +6,6 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 namespace Jitesoft\wOOPress\Contracts;
 
-use Exception;
 use InvalidArgumentException;
 use OutOfBoundsException;
 
@@ -27,7 +26,6 @@ interface OptionServiceInterface {
      * @return OptionInterface|null The created and saved option or null on failure.
      *
      * @throws InvalidArgumentException on invalid option argument.
-     * @throws Exception when option with given name already exists.
      * @throws OutOfBoundsException if value is to great.
      */
     public function add($option, $value = null, bool $autoload = true) : ?OptionInterface;
@@ -54,15 +52,15 @@ interface OptionServiceInterface {
 
     /**
      * Update a given option in the database.
+     * If the option does not exist, a new option with the given name will be created.
      *
      * @param string|OptionInterface $option Option as object or the name of option to update.
      * @param mixed                  $value  New option value (max 2^32 bytes). If the passed option is an
      *                                       OptionInterface object, this can be left null and will be ignored.
-     * @return bool Result.
+     * @return OptionInterface|null The updated option or null in case of failure.
      *
      * @throws InvalidArgumentException on invalid option argument.
      * @throws OutOfBoundsException if value is to great.
-     * @throws Exception when option with given name does not exist.
      */
-    public function update($option, $value = null) : bool;
+    public function update($option, $value = null) : ?OptionInterface;
 }

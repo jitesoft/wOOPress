@@ -11,6 +11,7 @@ use Jitesoft\wOOPress\Contracts\EventHandlerInterface;
 use Jitesoft\wOOPress\EventListener;
 use Jitesoft\wOOPress\Tests\AbstractTestCase;
 use Jitesoft\wOOPress\Tests\DI\DependencyContainer;
+use phpmock\Mock;
 use phpmock\MockBuilder;
 use PHPUnit\Framework\AssertionFailedError;
 
@@ -24,7 +25,7 @@ class EventHandlerTest extends AbstractTestCase {
         parent::setUp();
 
         $this->handler   = DependencyContainer::get(EventHandlerInterface::class);
-        $this->namespace = dirname(get_class($this->handler));
+        $this->namespace = (new \ReflectionClass($this->handler))->getNamespaceName();
     }
 
     public function testClearTag() {
@@ -61,13 +62,11 @@ class EventHandlerTest extends AbstractTestCase {
 
 
     public function testListenFilter() {
-        $builder = new MockBuilder();
-        $mock    = $builder->setNamespace($this->namespace)
-            ->setName('add_filter')
-            ->setFunction(function($tag, $action) {
-                $this->assertEquals("test", $tag);
-                $this->assertTrue(is_callable($action));
-            })->build();
+        $mock = new Mock($this->namespace, "add_filter", function($tag, $action) {
+
+            $this->assertEquals("test", $tag);
+            $this->assertTrue(is_callable($action));
+        });
 
         $mock->enable();
 
