@@ -28,7 +28,7 @@ class OptionServiceTest extends AbstractTestCase {
         parent::setUp();
 
         $this->service   = DependencyContainer::get(OptionServiceInterface::class);
-        $this->namespace = dirname(get_class($this->service));
+        $this->namespace = (new \ReflectionClass($this->service))->getNamespaceName();
     }
 
     public function testAddSuccessWithString() {
