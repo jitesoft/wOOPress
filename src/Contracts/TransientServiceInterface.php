@@ -6,6 +6,8 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 namespace Jitesoft\wOOPress\Contracts;
 
+use DateTime;
+
 /**
  * Contract for transient services.
  *
@@ -36,9 +38,10 @@ interface TransientServiceInterface {
      *                                             Transient.
      * @param mixed                     $value     Value to set
      *                                             (will be ignored if TransientInterface is passed as first arg).
+     * @param null|DateTime             $maxDate   Maximum lifetime. Set it to null to set eternal max lifetime.
      * @return TransientInterface
      */
-    public function set($transient, $value) : TransientInterface;
+    public function set($transient, $value, ?DateTime $maxDate = null) : TransientInterface;
 
     /**
      * Removes a transient object from the database.

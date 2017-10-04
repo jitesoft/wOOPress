@@ -29,7 +29,7 @@ interface TransientInterface extends OptionInterface {
      * rather that it will be gone from the database (or collected next cleanup) and not possible to fetch anymore.
      * At any time, the object could be removed from the database, so a fallback is recommended.
      *
-     * @return Carbon
+     * @return ?Carbon
      */
-    public function getMaxDate() : Carbon;
+    public function getMaxDate() : ?Carbon;
 }
