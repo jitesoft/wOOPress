@@ -36,13 +36,13 @@ class TransientServiceTest extends AbstractTestCase {
         });
 
         $mock->enable();
-        $out = $this->service->get("get_transient");
+        $out = $this->service->get("test-get");
         $mock->disable();
 
         $this->assertInstanceOf(TransientInterface::class, $out);
         $this->assertEquals("test-get", $out->getName());
         $this->assertEquals("test-value", $out->getValue());
-        $this->assertInstanceOf(Carbon::class, $out->getMaxDate());
+        $this->assertNull($out->getMaxDate());
         $this->assertFalse($out->isDirty());
     }
 
@@ -59,7 +59,7 @@ class TransientServiceTest extends AbstractTestCase {
         $this->assertInstanceOf(TransientInterface::class, $out);
         $this->assertEquals("test-get", $out->getName());
         $this->assertEquals("test-default-value", $out->getValue());
-        $this->assertInstanceOf(Carbon::class, $out->getMaxDate());
+        $this->assertNull( $out->getMaxDate());
         $this->assertTrue($out->isDirty());
     }
 
@@ -78,7 +78,7 @@ class TransientServiceTest extends AbstractTestCase {
 
     public function testSetSuccessWithString() {
         $mock = new Mock($this->namespace, 'set_transient', function(string $name, $value, int $time) {
-            $this->assertEquals("test-set", $name);
+            $this->assertEquals("test-name", $name);
             $this->assertEquals("test-value", $value);
             $this->assertEquals(300, $time);
             return true;
@@ -86,12 +86,12 @@ class TransientServiceTest extends AbstractTestCase {
 
         $mock->enable();
         $lifetime = Carbon::now()->addSeconds(300);
-        $out      = $this->service->set("test-set", "test-value", $lifetime);
+        $out      = $this->service->set("test-name", "test-value", $lifetime);
         $mock->disable();
 
         $this->assertInstanceOf(TransientInterface::class, $out);
-        $this->assertEquals("test-get", $out->getName());
-        $this->assertEquals("test-default-value", $out->getValue());
+        $this->assertEquals("test-name", $out->getName());
+        $this->assertEquals("test-value", $out->getValue());
         $this->assertInstanceOf(Carbon::class, $out->getMaxDate());
         $this->assertEquals($lifetime, $out->getMaxDate());
         $this->assertFalse($out->isDirty());
@@ -108,11 +108,11 @@ class TransientServiceTest extends AbstractTestCase {
         $mock->enable();
         $lifetime  = Carbon::now()->addSeconds(300);
         $transient = new Transient("test-set", "test-value", $lifetime);
-        $out       = $this->service->set($transient, "ignored", Carbon::now()->addSeconds(999));
+        $out       = $this->service->set($transient, "nothing");
         $mock->disable();
 
         $this->assertInstanceOf(TransientInterface::class, $out);
-        $this->assertEquals("test-get", $out->getName());
+        $this->assertEquals("test-set", $out->getName());
         $this->assertEquals("test-value", $out->getValue());
         $this->assertInstanceOf(Carbon::class, $out->getMaxDate());
         $this->assertEquals($lifetime, $out->getMaxDate());
@@ -130,8 +130,8 @@ class TransientServiceTest extends AbstractTestCase {
         $mock->enable();
         $lifetime = Carbon::now()->addSeconds(300);
         $out      = $this->service->set("test-set", "test-value", $lifetime);
-        $this->assertEquals("test-get", $out->getName());
-        $this->assertEquals("test-default-value", $out->getValue());
+        $this->assertEquals("test-set", $out->getName());
+        $this->assertEquals("test-value", $out->getValue());
         $this->assertInstanceOf(Carbon::class, $out->getMaxDate());
         $this->assertEquals($lifetime, $out->getMaxDate());
         $this->assertFalse($out->isDirty());
