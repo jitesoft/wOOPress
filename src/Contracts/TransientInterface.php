@@ -13,7 +13,7 @@ use Carbon\Carbon;
  * Transients are objects stored short time in the database, much like a option but with a max lifetime.
  * The object is not guaranteed to stay in the database until the max age expire, but guaranteed to not be available
  * to fetch after the time has passed.
- * This makes hte Transient object quite unreliable, and a fallback should be used in case its gone before the
+ * This makes the Transient object quite unreliable, and a fallback should be used in case its gone before the
  * application is done with it.
  *
  * The transient interface inherits the option interface, so at any time, the transient object could be saved as a
@@ -29,7 +29,7 @@ interface TransientInterface extends OptionInterface {
      * rather that it will be gone from the database (or collected next cleanup) and not possible to fetch anymore.
      * At any time, the object could be removed from the database, so a fallback is recommended.
      *
-     * @return ?Carbon
+     * @return Carbon|null
      */
     public function getMaxDate() : ?Carbon;
 }
