@@ -33,13 +33,13 @@ interface MetadataServiceInterface {
      * @param string      $key Metadata key as string.
      * @param int         $objectId The ID of the object to apply the metadata to.
      * @param string      $type Metadata type (see MetadataInterface::META_TYPE_* constants).
-     * @param string|null $value Metadata value as string, optional.
+     * @param mixed|null  $value Metadata value, optional.
      * @return bool Result.
      */
     public function deleteAllMetadata(string $key,
                                        int $objectId,
                                        string $type = MetadataInterface::META_TYPE_COMMENT,
-                                       ?string $value = null) : bool;
+                                       $value = null) : bool;
 
     /**
      * Update a metadata object (save to database).
@@ -54,9 +54,9 @@ interface MetadataServiceInterface {
     /**
      * Add metadata to the database.
      * If a metadata object is passed, it will be saved and returned.
-     * In case a string is used instead of object, the type, objectId and key have to be set.
+     * In case a none metadata object is used instead, the type, objectId and key have to be set.
      *
-     * @param MetadataInterface|string $metadata Metadata to add to the database.
+     * @param MetadataInterface|mixed  $metadata Metadata to add to the database.
      * @param string|null              $key      Metadata key as string.
      * @param string|null              $type     Metadata type (see MetadataInterface::META_TYPE_* constants).
      * @param int|null                 $objectId The ID of the object to apply the metadata to.
@@ -70,7 +70,6 @@ interface MetadataServiceInterface {
                                  ?string $type = null,
                                  ?int $objectId = null,
                                  bool $unique = false) : ?MetadataInterface;
-
 
     /**
      * Get meta data from the database.

@@ -25,9 +25,9 @@ interface MetadataInterface {
     /**
      * Get the value of the meta object.
      *
-     * @return string
+     * @return mixed
      */
-    public function getValue() : string;
+    public function getValue();
 
     /**
      * Get the ID of the meta object.

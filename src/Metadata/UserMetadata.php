@@ -17,11 +17,12 @@ class UserMetadata extends Metadata {
 
     /**
      * UserMetadata constructor.
+     *
      * @param int $id
      * @param string $key
-     * @param string $value
+     * @param mixed $value
      */
-    public function __construct(int $id, string $key, string $value) {
+    public function __construct(int $id, string $key, $value) {
         parent::__construct($id, $key, $value, self::META_TYPE_USER);
     }
 

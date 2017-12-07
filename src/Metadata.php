@@ -21,9 +21,16 @@ class Metadata implements MetadataInterface {
     protected $type;
     protected $dirty;
 
+    /**
+     * Metadata constructor.
+     * @param int $id
+     * @param string $key
+     * @param mixed $value
+     * @param string $type
+     */
     public function __construct(int $id,
                                  string $key,
-                                 string $value,
+                                 $value,
                                  string $type = MetadataInterface::META_TYPE_COMMENT) {
         $this->dirty = true;
         $this->id    = $id;
@@ -44,9 +51,9 @@ class Metadata implements MetadataInterface {
     /**
      * Get the value of the meta object.
      *
-     * @return string
+     * @return mixed
      */
-    public function getValue(): string {
+    public function getValue() {
         return $this->value;
     }
 
@@ -87,9 +94,9 @@ class Metadata implements MetadataInterface {
     }
 
     /**
-     * @param string $value
+     * @param mixed $value
      */
-    public function setValue(string $value) {
+    public function setValue($value) {
         $this->value = $value;
         $this->dirty = true;
     }
