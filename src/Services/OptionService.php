@@ -22,9 +22,9 @@ class OptionService implements OptionServiceInterface {
      * Create a new option.
      * The option will be saved and returned if successful else null will be returned.
      *
-     * @param string|OptionInterface $option Option  as object or the name of the option.
-     * @param mixed $value Value of the option (max 2^32 bytes). If the passed option is
-     *                                         an OptionInterface object, this can be left null and will be ignored.
+     * @param string|OptionInterface $option Option as object or the name of the option.
+     * @param mixed $value                   Value of the option (max 2^32 bytes). If the passed option is
+     *                                       an OptionInterface object, this can be left null and will be ignored.
      * @param bool $autoload If option should be auto-loaded or not.
      * @return OptionInterface|null The created and saved option or null on failure.
      *

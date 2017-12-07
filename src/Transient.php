@@ -15,7 +15,7 @@ use Jitesoft\wOOPress\Contracts\TransientInterface;
 class Transient extends Option implements TransientInterface {
 
     /** @var Carbon|null */
-    protected  $maxDate;
+    protected $maxDate;
 
     public function __construct($name, $value = null, ?DateTime $maxDate = null) {
         parent::__construct($name, $value);
@@ -35,4 +35,5 @@ class Transient extends Option implements TransientInterface {
     public function getMaxDate(): ?Carbon {
         return $this->maxDate;
     }
+
 }

@@ -6,7 +6,7 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 namespace Jitesoft\wOOPress\Services;
 
-use Jitesoft\Exceptions\LogicExceptions\InvalidOperationException;
+use Jitesoft\Exceptions\Logic\InvalidOperationException;
 use Jitesoft\wOOPress\Contracts\EventHandlerInterface;
 use Jitesoft\wOOPress\Contracts\EventListenerInterface;
 
