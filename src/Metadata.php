@@ -1,15 +1,18 @@
 <?php
-
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
   Metadata.php - Part of the woopress project.
 
   © - Jitesoft 2017
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-
 namespace Jitesoft\wOOPress;
 
 use Jitesoft\wOOPress\Contracts\MetadataInterface;
 
+/**
+ * Class Metadata
+ *
+ * Simple implementation of the MetadataInterface
+ */
 class Metadata implements MetadataInterface {
 
     protected $key;
@@ -82,4 +85,13 @@ class Metadata implements MetadataInterface {
     public function setDirtyState(bool $state) {
         $this->dirty = $state;
     }
+
+    /**
+     * @param string $value
+     */
+    public function setValue(string $value) {
+        $this->value = $value;
+        $this->dirty = true;
+    }
+
 }
