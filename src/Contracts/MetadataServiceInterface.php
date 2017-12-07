@@ -6,6 +6,8 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 namespace Jitesoft\wOOPress\Contracts;
 
+use Exception;
+use Jitesoft\Exceptions\Database\Entity\DuplicateEntityException;
 use Jitesoft\Utilities\DataStructures\Lists\IndexedListInterface;
 
 /**
@@ -45,6 +47,7 @@ interface MetadataServiceInterface {
      * @param MetadataInterface $metadata The metadata object to update.
      *
      * @return MetadataInterface
+     * @throws Exception
      */
     public function updateMetadata(MetadataInterface $metadata) : MetadataInterface;
 
@@ -60,6 +63,7 @@ interface MetadataServiceInterface {
      * @param bool                     $unique   If the metadata is unique or not.
      *                                           If unique, no more objects will be added to the given metadata key.
      * @return MetadataInterface|null Resulting metadata object.
+     * @throws DuplicateEntityException
      */
     public function addMetadata($metadata,
                                  ?string $key = null,

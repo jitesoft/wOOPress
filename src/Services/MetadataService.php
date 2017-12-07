@@ -8,8 +8,11 @@
 
 namespace Jitesoft\wOOPress\Services;
 
+use Exception;
 use Jitesoft\Exceptions\Database\Entity\DuplicateEntityException;
 use Jitesoft\Exceptions\Logic\InvalidArgumentException;
+use Jitesoft\Utilities\DataStructures\Arrays;
+use Jitesoft\Utilities\DataStructures\Lists\IndexedList;
 use Jitesoft\Utilities\DataStructures\Lists\IndexedListInterface;
 use Jitesoft\wOOPress\Contracts\MetadataInterface;
 use Jitesoft\wOOPress\Contracts\MetadataServiceInterface;
@@ -24,7 +27,13 @@ class MetadataService implements MetadataServiceInterface {
      * @return bool Result.
      */
     public function deleteMetadata(MetadataInterface $metadata): bool {
-        // TODO: Implement deleteMetadata() method.
+        return delete_metadata(
+            $metadata->getMetaType(),
+            $metadata->getId(),
+            $metadata->getKey(),
+            $metadata->getValue(),
+            false
+        );
     }
 
     /**
@@ -41,18 +50,32 @@ class MetadataService implements MetadataServiceInterface {
                                       int $objectId,
                                       string $type = MetadataInterface::META_TYPE_COMMENT,
                                       ?string $value = null): bool {
-        // TODO: Implement deleteAllMetadata() method.
+
+        return delete_metadata($type, $objectId, $key, $value ?? '', true);
     }
 
     /**
      * Update a metadata object (save to database).
      *
      * @param MetadataInterface $metadata The metadata object to update.
-     *
      * @return MetadataInterface
+     * @throws Exception
      */
     public function updateMetadata(MetadataInterface $metadata): MetadataInterface {
-        // TODO: Implement updateMetadata() method.
+
+        $result = update_metadata(
+            $metadata->getMetaType(),
+            $metadata->getId(),
+            $metadata->getKey(),
+            $metadata->getValue()
+        );
+
+        if ($result === false) {
+            throw new Exception("Unexpected error.");
+        }
+
+        $metadata->setDirtyState(false);
+        return $metadata;
     }
 
     /**
@@ -113,6 +136,19 @@ class MetadataService implements MetadataServiceInterface {
      * @return IndexedListInterface|MetadataInterface[]
      */
     public function getMetadata(string $type, int $id, ?string $key = null, bool $single = false) {
-        // TODO: Implement getMetadata() method.
+
+        $resultSet = get_metadata($type, $id, $key ?? '', $single);
+        if (!$resultSet) {
+            return new IndexedList();
+        }
+        $resultSet = is_array($resultSet) ? $resultSet : [$resultSet];
+
+        $result = Arrays::map($resultSet, function($result) use ($type, $id, $key) {
+            $data = new Metadata($id, $key ?? '', $result, $type);
+            $data->setDirtyState(false);
+            return $data;
+        });
+
+        return new IndexedList($result);
     }
 }
