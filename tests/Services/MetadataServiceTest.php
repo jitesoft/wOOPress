@@ -47,7 +47,7 @@ class MetadataServiceTest extends AbstractTestCase {
         );
 
         $mock->enable();
-        $result = $this->service->addMetadata(new TestMetadata());
+        $result = $this->service->addMetadata($metaTest);
         $mock->disable();
 
         $this->assertTrue($wasCalled);
@@ -71,13 +71,14 @@ class MetadataServiceTest extends AbstractTestCase {
                 $this->assertEquals($key, "key");
                 $this->assertEquals($type, "type");
                 $this->assertEquals($value, "MetaTest");
+                $this->assertEquals(10, $id);
                 $this->assertFalse($unique);
                 return true;
             }
         );
 
         $mock->enable();
-        $result = $this->service->addMetadata("MetaTest", "key", "type", false);
+        $result = $this->service->addMetadata("MetaTest", "key", "type", 10, false);
         $mock->disable();
 
         $this->assertTrue($wasCalled);
@@ -86,6 +87,7 @@ class MetadataServiceTest extends AbstractTestCase {
         $this->assertEquals("MetaTest", $result->getValue());
         $this->assertEquals("key", $result->getKey());
         $this->assertEquals("type", $result->getMetaType());
+        $this->assertEquals(10, $result->getId());
         $this->assertFalse($result->isDirty());
     }
 
@@ -103,7 +105,7 @@ class MetadataServiceTest extends AbstractTestCase {
         );
 
         $mock->enable();
-        $result = $this->service->addMetadata(new TestMetadata(), null, null, true);
+        $result = $this->service->addMetadata(new TestMetadata(), null, null, 0,true);
         $mock->disable();
 
         $this->assertTrue($wasCalled);
@@ -124,7 +126,7 @@ class MetadataServiceTest extends AbstractTestCase {
         );
 
         $mock->enable();
-        $result = $this->service->addMetadata("a", "b", "c", true);
+        $result = $this->service->addMetadata("a", "b", "c", 0,true);
         $mock->disable();
 
         $this->assertTrue($wasCalled);
@@ -150,12 +152,8 @@ class MetadataServiceTest extends AbstractTestCase {
         $ex = null;
         try {
             $mock->enable();
-
-            $r = $this->service->addMetadata(new TestMetadata(), true);
+            $this->service->addMetadata(new TestMetadata(), null, null, null,true);
             $this->assertTrue($wasCalled);
-            $this->assertNotNull($r);
-            $wasCalled = false;
-            $this->service->addMetadata(new TestMetadata(), true);
         } catch (\Exception $exception) {
             $ex = $exception;
         }
@@ -163,7 +161,7 @@ class MetadataServiceTest extends AbstractTestCase {
 
         $this->assertNotNull($ex);
         $this->assertInstanceOf(DuplicateEntityException::class, $ex);
-        $this->assertEquals('ABC', $ex->getMessage());
+        $this->assertEquals('Unique metadata already exist.', $ex->getMessage());
 
         $this->assertTrue($wasCalled);
 
@@ -177,12 +175,6 @@ class MetadataServiceTest extends AbstractTestCase {
             function(string $type, int $id, string $key, $value, bool $unique) use(&$wasCalled) {
                 $wasCalled = true;
                 $this->assertTrue($unique);
-                static $ret = true;
-                if ($ret) {
-                    $ret = false;
-                    return true;
-                }
-
                 return false;
             }
         );
@@ -190,12 +182,8 @@ class MetadataServiceTest extends AbstractTestCase {
         $ex = null;
         try {
             $mock->enable();
-
-            $r = $this->service->addMetadata("a", "b", "c", true);
+            $this->service->addMetadata("a", "b", "c", 5, true);
             $this->assertTrue($wasCalled);
-            $this->assertNotNull($r);
-            $wasCalled = false;
-            $this->service->addMetadata("a", "b", "c", true);
         } catch (\Exception $exception) {
             $ex = $exception;
         }
@@ -203,7 +191,7 @@ class MetadataServiceTest extends AbstractTestCase {
 
         $this->assertNotNull($ex);
         $this->assertInstanceOf(DuplicateEntityException::class, $ex);
-        $this->assertEquals('ABC', $ex->getMessage());
+        $this->assertEquals('Unique metadata already exist.', $ex->getMessage());
 
         $this->assertTrue($wasCalled);
 
@@ -219,6 +207,7 @@ class MetadataServiceTest extends AbstractTestCase {
                 $this->assertEquals('value1', $value);
                 $this->assertEquals('key1', $key);
                 $this->assertEquals(TestMetadata::META_TYPE_POST, $type);
+                $this->assertEquals(53, $id);
                 $wasCalled = true;
                 $this->assertTrue($unique);
                 return true;
@@ -226,7 +215,7 @@ class MetadataServiceTest extends AbstractTestCase {
         );
 
         $mock->enable();
-        $out = $this->service->addMetadata($metaTest, null, null, true);
+        $out = $this->service->addMetadata($metaTest, null, null, 53, true);
         $mock->disable();
         $this->assertTrue($wasCalled);
         $wasCalled = false;
@@ -378,7 +367,7 @@ class MetadataServiceTest extends AbstractTestCase {
             $this->namespace,
             'delete_metadata',
             function($type, $id, $key, $value, $deleteAll) use(&$wasCalled) {
-                $this->assertEquals(0, $id);
+                $this->assertEquals(10, $id);
                 $this->assertEquals(TestMetadata::META_TYPE_COMMENT, $type);
                 $this->assertEquals('testkey', $key);
                 $this->assertEquals('abc', $value);
@@ -389,7 +378,11 @@ class MetadataServiceTest extends AbstractTestCase {
         );
 
         $mock->enable();
-        $this->assertTrue($this->service->deleteAllMetadata("testkey", MetadataInterface::META_TYPE_COMMENT, "abc"));
+        $this->assertTrue($this->service->deleteAllMetadata(
+            "testkey",
+            10,
+            MetadataInterface::META_TYPE_COMMENT,
+            "abc"));
         $mock->disable();
     }
 
@@ -404,7 +397,7 @@ class TestMetadata implements MetadataInterface {
     public $dirty;
 
 
-    public function __construct($key = "testkey", $value = "testvalue", $type = self::META_TYPE_COMMENT, $id = 0) {
+    public function __construct($key = "testkey", $value = "testvalue", $type = self::META_TYPE_COMMENT, $id = 72) {
         $this->key   = $key;
         $this->value = $value;
         $this->type  = $type;
@@ -430,6 +423,10 @@ class TestMetadata implements MetadataInterface {
 
     public function isDirty(): bool {
         return $this->dirty;
+    }
+
+    public function setDirtyState(bool $state) {
+        $this->dirty = $state;
     }
 
 }

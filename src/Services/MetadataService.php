@@ -8,12 +8,14 @@
 
 namespace Jitesoft\wOOPress\Services;
 
+use Jitesoft\Exceptions\Database\Entity\DuplicateEntityException;
+use Jitesoft\Exceptions\Logic\InvalidArgumentException;
 use Jitesoft\Utilities\DataStructures\Lists\IndexedListInterface;
 use Jitesoft\wOOPress\Contracts\MetadataInterface;
 use Jitesoft\wOOPress\Contracts\MetadataServiceInterface;
+use Jitesoft\wOOPress\Metadata;
 
 class MetadataService implements MetadataServiceInterface {
-
     /**
      * Delete a metadata object from the database.
      *
@@ -30,11 +32,13 @@ class MetadataService implements MetadataServiceInterface {
      * If value is passed, it will only delete metadata with matched value.
      *
      * @param string $key Metadata key as string.
+     * @param int $objectId The ID of the object to apply the metadata to.
      * @param string $type Metadata type (see MetadataInterface::META_TYPE_* constants).
      * @param string|null $value Metadata value as string, optional.
      * @return bool Result.
      */
     public function deleteAllMetadata(string $key,
+                                      int $objectId,
                                       string $type = MetadataInterface::META_TYPE_COMMENT,
                                       ?string $value = null): bool {
         // TODO: Implement deleteAllMetadata() method.
@@ -54,20 +58,46 @@ class MetadataService implements MetadataServiceInterface {
     /**
      * Add metadata to the database.
      * If a metadata object is passed, it will be saved and returned.
-     * In case a string is used instead of object, the type and key have to be set.
+     * In case a string is used instead of object, the type, objectId and key have to be set.
      *
      * @param MetadataInterface|string $metadata Metadata to add to the database.
      * @param string|null $key Metadata key as string.
      * @param string|null $type Metadata type (see MetadataInterface::META_TYPE_* constants).
-     * @param bool $unique If it is supposed to be unique or not.
+     * @param int|null $objectId The ID of the object to apply the metadata to.
+     * @param bool $unique If the metadata is unique or not.
      *                                           If unique, no more objects will be added to the given metadata key.
      * @return MetadataInterface|null Resulting metadata object.
+     * @throws DuplicateEntityException
      */
     public function addMetadata($metadata,
-                                string $key = null,
-                                string $type = null,
+                                ?string $key = null,
+                                ?string $type = null,
+                                ?int $objectId = null,
                                 bool $unique = false): ?MetadataInterface {
-        // TODO: Implement addMetadata() method.
+
+        $type  = is_string($metadata) ? $type     : $metadata->getMetaType();
+        $key   = is_string($metadata) ? $key      : $metadata->getKey();
+        $id    = is_string($metadata) ? $objectId : $metadata->getId();
+        $value = is_string($metadata) ? $metadata : $metadata->getValue();
+
+        if (is_string($metadata)) {
+            $metadata = new Metadata($id, $key, $value, $type);
+        }
+
+        if (!add_metadata($type, $id, $key, $value, $unique)) {
+            if ($unique) {
+                throw new DuplicateEntityException(
+                    "Unique metadata already exist.",
+                    'metadata',
+                    sprintf('%d:%s:%s', $id, $type, $key)
+                );
+            }
+
+            return null;
+        }
+
+        $metadata->setDirtyState(false);
+        return $metadata;
     }
 
     /**
@@ -76,8 +106,8 @@ class MetadataService implements MetadataServiceInterface {
      * it will be a list with one object.
      *
      * @param string $type The type of metadata (@see MetadataInterface constants).
-     * @param int $id Meta id.
-     * @param null|string $key The metadata key (if omitted, all of the type with given id will be fetched).
+     * @param int $id ID of the object that the metadata is bound to.
+     * @param null|string $key The metadata key (if null all metadata from the object with given id will be fetched).
      * @param bool $single If only the first item found should be returned.
      *
      * @return IndexedListInterface|MetadataInterface[]

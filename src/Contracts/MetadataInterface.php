@@ -51,4 +51,10 @@ interface MetadataInterface {
      */
     public function isDirty() : bool;
 
+    /**
+     * @internal
+     * @param bool $state
+     */
+    public function setDirtyState(bool $state);
+
 }
