@@ -52,7 +52,6 @@ class OptionService implements OptionServiceInterface {
             return $out;
         }
 
-
         return null;
     }
 
@@ -130,6 +129,6 @@ class OptionService implements OptionServiceInterface {
         }
 
         return null;
-
     }
+
 }

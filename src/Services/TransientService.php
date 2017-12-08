@@ -30,6 +30,7 @@ class TransientService implements TransientServiceInterface {
         if ($value === false) {
             return $defaultValue === null ? null : new Transient($transient, $defaultValue, null);
         }
+
         $out = new Transient($transient, $value, null);
         $out->setDirty(false);
         return $out;
@@ -54,6 +55,7 @@ class TransientService implements TransientServiceInterface {
             if ($maxDate === null) {
                 $maxDate = $transient->getMaxDate();
             }
+
             $transient = $transient->getName();
         }
 
@@ -79,6 +81,8 @@ class TransientService implements TransientServiceInterface {
         if ($transient instanceof TransientInterface) {
             $transient = $transient->getName();
         }
+
         return delete_transient($transient);
     }
+
 }

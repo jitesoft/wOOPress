@@ -1,11 +1,9 @@
 <?php
-
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
   EventListener.php - Part of the woopress project.
 
   © - Jitesoft 2017
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-
 namespace Jitesoft\wOOPress;
 
 use Jitesoft\wOOPress\Contracts\EventListenerInterface;
@@ -17,7 +15,6 @@ class EventListener implements EventListenerInterface {
     public function __construct(callable $callback = null) {
         $this->callback = $callback;
     }
-
 
     /**
      * Callback function which will be called when the event that the listener subscribes to is fired.
@@ -31,4 +28,5 @@ class EventListener implements EventListenerInterface {
         $cb = $this->callback;
         return $cb($event, $type, ...$args);
     }
+
 }

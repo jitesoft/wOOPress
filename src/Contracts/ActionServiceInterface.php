@@ -50,4 +50,5 @@ interface ActionServiceInterface {
      * @return bool Result.
      */
     public function fire(string $tag, ...$args) : bool;
+
 }

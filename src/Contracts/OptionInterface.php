@@ -39,4 +39,5 @@ interface OptionInterface {
      * @return bool True if dirty, false if clean.
      */
     public function isDirty() : bool;
+
 }

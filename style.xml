@@ -46,7 +46,7 @@
     <rule ref="MySource.PHP.EvalObjectFactory"/>
     <rule ref="Generic.WhiteSpace.ScopeIndent">
         <properties>
-            <property name="indent" value="2"/>
+            <property name="indent" value="4"/>
         </properties>
     </rule>
     <rule ref="PEAR.Commenting.InlineComment"/>
@@ -60,7 +60,7 @@
     <rule ref="PSR2.Classes.PropertyDeclaration"/>
     <rule ref="PSR2.ControlStructures.SwitchDeclaration">
         <properties>
-            <property name="indent" value="2"/>
+            <property name="indent" value="4"/>
         </properties>
     </rule>
     <rule ref="PSR2.Files.EndFileNewline"/>

@@ -66,4 +66,5 @@ class Option implements OptionInterface {
     public function setDirty(bool $state) {
         $this->dirty = $state;
     }
+
 }

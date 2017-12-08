@@ -32,4 +32,5 @@ interface TransientInterface extends OptionInterface {
      * @return Carbon|null
      */
     public function getMaxDate() : ?Carbon;
+
 }

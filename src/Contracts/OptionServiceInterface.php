@@ -63,4 +63,5 @@ interface OptionServiceInterface {
      * @throws OutOfBoundsException if value is to great.
      */
     public function update($option, $value = null) : ?OptionInterface;
+
 }

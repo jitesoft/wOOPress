@@ -140,6 +140,7 @@ class MetadataService implements MetadataServiceInterface {
         if (!$resultSet) {
             return new IndexedList();
         }
+
         $resultSet = is_array($resultSet) ? $resultSet : [$resultSet];
 
         $result = Arrays::map($resultSet, function($result) use ($type, $id, $key) {
@@ -150,4 +151,5 @@ class MetadataService implements MetadataServiceInterface {
 
         return new IndexedList($result);
     }
+
 }
