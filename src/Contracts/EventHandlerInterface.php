@@ -16,7 +16,6 @@ interface EventHandlerInterface {
     public const EVENT_TYPE_FILTER = "filter";
     public const EVENT_TYPE_ALL    = "*";
 
-
     /**
      * Add a listener to a given event.
      *
@@ -98,4 +97,5 @@ interface EventHandlerInterface {
      * @return bool Result.
      */
     public function clear($tag = "*") : bool;
+
 }

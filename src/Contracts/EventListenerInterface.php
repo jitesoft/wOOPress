@@ -20,4 +20,5 @@ interface EventListenerInterface {
      * @return
      */
     public function invoke(string $event, string $type, ...$args);
+
 }

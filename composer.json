@@ -11,8 +11,9 @@
     ],
     "require": {
         "php": ">7.1",
-        "jitesoft/exceptions": "^1.1",
-        "nesbot/carbon": "^1.22"
+        "jitesoft/exceptions": "^2",
+        "nesbot/carbon": "^1.22",
+        "jitesoft/datastructures": "^3"
     },
     "require-dev": {
         "phpunit/phpunit": "^6.3",
