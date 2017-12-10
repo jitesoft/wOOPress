@@ -55,8 +55,10 @@ class ActionService implements ActionServiceInterface {
                     )
                 );
             }
+
             $action = new EventListener($action);
         }
+
         return $this->eventHandler->listen(
             $tag,
             EventHandlerInterface::EVENT_TYPE_ACTION,
@@ -93,4 +95,5 @@ class ActionService implements ActionServiceInterface {
     public function fire(string $tag, ...$args): bool {
         return $this->eventHandler->fire($tag, EventHandlerInterface::EVENT_TYPE_ACTION, ...$args);
     }
+
 }

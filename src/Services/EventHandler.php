@@ -6,7 +6,7 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 namespace Jitesoft\wOOPress\Services;
 
-use Jitesoft\Exceptions\LogicExceptions\InvalidOperationException;
+use Jitesoft\Exceptions\Logic\InvalidOperationException;
 use Jitesoft\wOOPress\Contracts\EventHandlerInterface;
 use Jitesoft\wOOPress\Contracts\EventListenerInterface;
 
@@ -52,6 +52,7 @@ class EventHandler implements EventHandlerInterface {
                "It is not possible to add a listener to the `*` tag!"
             );
         }
+
         if ($type === "*") {
             throw new InvalidOperationException(
                "It is not possible to add a listener to the `*` type!"
@@ -112,6 +113,7 @@ class EventHandler implements EventHandlerInterface {
             if ($tag !== "*" && $tag !== $innerTag) {
                 continue;
             }
+
             if (array_key_exists($handle, $listeners) && $listeners[$handle]['type'] === $type || $type === "*") {
                 // Remove the listener and its data.
                 // As of now, we do not stop listen to the actual WordPress event,
@@ -172,6 +174,7 @@ class EventHandler implements EventHandlerInterface {
                     $count += count($listeners);
                     continue;
                 }
+
                 foreach ($listeners as $listener) {
                     if ($listener["type"] === $type) {
                         $count++;
@@ -179,6 +182,7 @@ class EventHandler implements EventHandlerInterface {
                 }
             }
         }
+
         return $count;
     }
 
@@ -208,6 +212,8 @@ class EventHandler implements EventHandlerInterface {
                 }
             }
         }
+
         return true;
     }
+
 }

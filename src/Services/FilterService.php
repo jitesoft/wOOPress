@@ -53,8 +53,10 @@ class FilterService implements FilterServiceInterface {
                     )
                 );
             }
+
             $filter = new EventListener($filter);
         }
+
         return $this->eventHandler->listen(
             $tag,
             EventHandlerInterface::EVENT_TYPE_FILTER,
@@ -87,4 +89,5 @@ class FilterService implements FilterServiceInterface {
     public function apply(string $tag, ...$args): bool {
         return $this->eventHandler->fire($tag, EventHandlerInterface::EVENT_TYPE_FILTER, ...$args);
     }
+
 }

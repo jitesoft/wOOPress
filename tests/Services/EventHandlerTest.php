@@ -6,14 +6,13 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 namespace Jitesoft\wOOPress\Tests\Services;
 
-use Jitesoft\Exceptions\LogicExceptions\InvalidOperationException;
+use Jitesoft\Exceptions\Logic\InvalidOperationException;
 use Jitesoft\wOOPress\Contracts\EventHandlerInterface;
 use Jitesoft\wOOPress\EventListener;
 use Jitesoft\wOOPress\Tests\AbstractTestCase;
 use Jitesoft\wOOPress\Tests\DI\DependencyContainer;
 use phpmock\Mock;
 use phpmock\MockBuilder;
-use PHPUnit\Framework\AssertionFailedError;
 
 class EventHandlerTest extends AbstractTestCase {
     /** @var EventHandlerInterface */
